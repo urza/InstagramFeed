@@ -9,7 +9,7 @@
  * https://github.com/jsanahuja/InstagramFeed
  *
  */
-(function(root, factory) {
+(function (root, factory) {
     if (typeof define === "function" && define.amd) {
         define([], factory);
     } else if (typeof exports === "object") {
@@ -17,7 +17,7 @@
     } else {
         root.InstagramFeed = factory();
     }
-}(this, function() {
+}(this, function () {
     var defaults = {
         'host': "https://www.instagram.com/",
         'username': '',
@@ -54,13 +54,13 @@
         '`': '&#x60;',
         '=': '&#x3D;'
     };
-    function escape_string(str){
+    function escape_string(str) {
         return str.replace(/[&<>"'`=\/]/g, function (char) {
             return escape_map[char];
         });
     }
 
-    return function(opts) {
+    return function (opts) {
         this.options = Object.assign({}, defaults);
         this.options = Object.assign(this.options, opts);
         this.is_tag = this.options.username == "";
@@ -77,18 +77,18 @@
             this.valid = false;
         }
 
-        this.get = function(callback) {
+        this.get = function (callback) {
             var url = this.is_tag ? this.options.host + "explore/tags/" + this.options.tag + "/" : this.options.host + this.options.username + "/",
                 xhr = new XMLHttpRequest();
 
             var _this = this;
-            xhr.onload = function(e) {
+            xhr.onload = function (e) {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         var data = xhr.responseText.split("window._sharedData = ")[1].split("<\/script>")[0];
                         data = JSON.parse(data.substr(0, data.length - 1));
                         data = data.entry_data.ProfilePage || data.entry_data.TagPage;
-                        if(typeof data === "undefined"){
+                        if (typeof data === "undefined") {
                             console.error("Instagram Feed: It looks like YOUR network has been temporary banned because of too many requests. See https://github.com/jsanahuja/jquery.instagramFeed/issues/25");
                             return;
                         }
@@ -103,11 +103,11 @@
             xhr.send();
         };
 
-        this.parse_caption = function(igobj, data) {
+        this.parse_caption = function (igobj, data) {
             if (
-                typeof igobj.node.edge_media_to_caption.edges[0] !== "undefined" && 
-                typeof igobj.node.edge_media_to_caption.edges[0].node !== "undefined" && 
-                typeof igobj.node.edge_media_to_caption.edges[0].node.text !== "undefined" && 
+                typeof igobj.node.edge_media_to_caption.edges[0] !== "undefined" &&
+                typeof igobj.node.edge_media_to_caption.edges[0].node !== "undefined" &&
+                typeof igobj.node.edge_media_to_caption.edges[0].node.text !== "undefined" &&
                 igobj.node.edge_media_to_caption.edges[0].node.text !== null
             ) {
                 return igobj.node.edge_media_to_caption.edges[0].node.text;
@@ -131,7 +131,7 @@
             return (this.is_tag ? data.name : data.username) + " image ";
         }
 
-        this.display = function(data) {
+        this.display = function (data) {
             // Styling
             if (this.options.styling) {
                 var width = (100 - this.options.margin * 2 * this.options.items_per_row) / this.options.items_per_row;
@@ -140,7 +140,7 @@
                     'profile_image': " style='border-radius:10em;width:15%;max-width:125px;min-width:50px;'",
                     'profile_name': " style='font-size:1.2em;'",
                     'profile_biography': " style='font-size:1em;'",
-                    'gallery_image': " style='margin:" + this.options.margin + "% " + this.options.margin + "%;width:" + width + "%;float:left;'"
+                    'gallery_image': " style='margin:" + this.options.margin + "% " + this.options.margin + "%;float:left;'"
                 };
             } else {
                 var styles = {
@@ -178,7 +178,7 @@
                     var imgs = (data.edge_owner_to_timeline_media || data.edge_hashtag_to_media).edges;
                     max = (imgs.length > this.options.items) ? this.options.items : imgs.length;
 
-                    html += "<div class='instagram_gallery'>";
+                    html += "<div class='instagram_gallery row'>";
 
                     for (var i = 0; i < max; i++) {
                         var url = "https://www.instagram.com/p/" + imgs[i].node.shortcode,
@@ -200,9 +200,9 @@
                         }
 
                         if (this.is_tag) data.username = '';
-                        html += "<a href='" + url + "' class='instagram-" + type_resource + "' title='" + caption + "' rel='noopener' target='_blank'>";
-                        html += "<img src='" + image + "' alt='" + caption + "'" + styles.gallery_image + " />";
-                        html += "</a>";
+                        html += "<div class='col-sm-3'><a href='" + url + "' class='instagram-" + type_resource + "' title='" + caption + "' rel='noopener' target='_blank'>";
+                        html += "<img class='img-fluid' src='" + image + "' alt='" + caption + "'" + styles.gallery_image + " />";
+                        html += "</a></div>";
                     }
 
                     html += "</div>";
@@ -230,8 +230,8 @@
             this.options.container.innerHTML = html;
         };
 
-        this.run = function() {
-            this.get(function(data, instance) {
+        this.run = function () {
+            this.get(function (data, instance) {
                 if (instance.options.get_data)
                     instance.options.callback(data);
                 else
