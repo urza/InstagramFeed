@@ -200,7 +200,7 @@
                         }
 
                         if (this.is_tag) data.username = '';
-                        html += "<div class='col-sm-3'><a href='" + url + "' class='instagram-" + type_resource + "' title='" + caption + "' rel='noopener' target='_blank'>";
+                        html += "<div class='col-sm-3" + (i>0 ? " d-none d-sm-block" : "") + "'><a href='" + url + "' class='instagram-" + type_resource + "' title='" + caption + "' rel='noopener' target='_blank'>";
                         html += "<img class='img-fluid' src='" + image + "' alt='" + caption + "'" + styles.gallery_image + " />";
                         html += "</a></div>";
                     }
